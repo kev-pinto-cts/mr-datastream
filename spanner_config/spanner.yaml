@@ -1,0 +1,27 @@
+spanner:
+  project: cloudsqlpoc-demo
+  instances:
+  - name: test-inst1
+    display_name: Regional Spanner Instance
+    config: regional-europe-west2
+    num_nodes: 1
+    force_destroy: true
+    labels:
+      product: tfxrs
+      env: dev
+    databases:
+    - name: tfxrs-sql-service
+      database_dialect: GOOGLE_STANDARD_SQL
+      version_retention_period: 7d
+  - name: test-inst2
+    display_name: Regional Spanner Instance
+    config: regional-europe-west2
+    num_nodes: 1
+    force_destroy: true
+    labels:
+      product: fxmp
+      env: dev
+    databases:
+    - name: fxmp-rate-service
+      database_dialect: POSTGRESQL
+      version_retention_period: 7d

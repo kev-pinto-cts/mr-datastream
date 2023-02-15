@@ -1,0 +1,13 @@
+{
+	"name": "nwm-standard",
+	"dockerFile": "Dockerfile",
+	"extensions": [
+		"ms-azuretools.vscode-docker",
+		"ms-vsliveshare.vsliveshare",
+		"hashicorp.terraform",
+		"davidanson.vscode-markdownlint",
+		"redhat.vscode-yaml"
+	],
+	"postCreateCommand": "pre-commit install",
+	"remoteUser": "vscode"
+}
