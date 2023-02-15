@@ -10,10 +10,10 @@ variable "env" {
 variable "sql_admins" {
   type        = list(string)
   description = "Admins must have nwmworld.com address"
-  # validation {
-  #   condition     = can(regex("^[A-Za-z0-9._%+-]+@nwmworld.com$", var.sql_admins[0]))
-  #   error_message = "Not a valid Natwest email"
-  # }
+  validation {
+    condition     = can(regex("^[A-Za-z0-9._%+-]+@nwmworld.com$", var.sql_admins[0]))
+    error_message = "Not a valid Natwest email"
+  }
 }
 
 variable "sql_sa" {
