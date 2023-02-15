@@ -45,8 +45,9 @@ The following file creates the following:
 -   2 dbs called tfxrs-rate-service & tfxrs-quote-service using POSTGRESQL dialect
 -   1 db called tfxrs-sql-service using the GOOGLE_STANDARD_SQL dialect
 
-One can create Multiple Instances and Multiple Databases within these instances
-as long as the Heirachial structure of the YAML is maintained.
+**One can create Multiple Instances and Multiple Databases within these instances
+with different SQL Dialects (POSTGRESQL/STANDARD) as long as the Heirachial structure
+of the YAML is maintained**.
 
 ```yaml
 spanner:
