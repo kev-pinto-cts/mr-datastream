@@ -1,5 +1,4 @@
 spanner:
-  project: cloudsqlpoc-demo
   instances:
   - name: test-inst1
     display_name: Regional Spanner Instance

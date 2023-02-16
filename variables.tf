@@ -1,3 +1,7 @@
+variable "project_id" {
+  description = "GCP Project ID"
+}
+
 variable "spanner_config" {
   description = "A list of n spanner Instances and Databases Specified in YAML"
 }

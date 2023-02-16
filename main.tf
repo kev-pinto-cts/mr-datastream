@@ -21,7 +21,7 @@ locals {
     for instance in local.spanner_config.spanner.instances : {
       name          = "${instance.name}-${var.env}"
       display_name  = try(instance.display_name, "${instance.name}-${var.env}")
-      project       = try(local.spanner_config.spanner.project, data.google_project.project.project_id)
+      project       = try(var.project_id, data.google_project.project.project_id)
       num_nodes     = instance.num_nodes
       config        = instance.config
       force_destroy = try(instance.force_destroy, local.force_destroy_default)

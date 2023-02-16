@@ -24,7 +24,8 @@ No requirements.
 
 | Name | Type |
 |------|------|
-| [google_project_iam_binding.authoritative](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_binding) | resource |
+| [google_spanner_instance_iam_policy.authoritative](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/spanner_instance_iam#google_spanner_instance_iam_policy) | resource |
+| [google_spanner_database_iam_policy.authoritative](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/spanner_database_iam#google_spanner_database_iam_policy) | resource |
 | [google_sql_user.service-account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_user) | resource |
 | [google_sql_user.users](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_user) | resource |
 
@@ -32,6 +33,7 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| project_id|GCP Project ID | `string`| `n/a` | yes|
 | env| Target Env (dev/test/uat/prod) | `string`| `n/a` | yes|
 | spanner.yaml | A YAML file Speciifying the Instances to be created and databases to be created under each instance | `yaml` | `n/a` | yes |
 | sql_admins| A list of Admins - must have nwmworld.com domains | `list(string)` | `n/a` | yes |
@@ -51,7 +53,6 @@ of the YAML is maintained**.
 
 ```yaml
 spanner:
-  project: cloudsqlpoc-demo
   instances:
   - name: test-inst1
     display_name: Regional Spanner Instance
@@ -76,7 +77,6 @@ Example 2: Creating 2 Instances and 1 database within each Instance
 
 ```yaml
 spanner:
-  project: cloudsqlpoc-demo
   instances:
   - name: test-inst1
     display_name: Regional Spanner Instance
@@ -103,6 +103,18 @@ spanner:
       database_dialect: POSTGRESQL
       version_retention_period: 7d
 
+```
+
+### Example Usage - Module
+```bash
+module "mr-spanner" {
+  source         = "../"
+  project_id     = "cloudsqlpoc-demo"
+  env            = "dev"
+  spanner_config = try(yamldecode(file("../spanner_config/spanner.yaml")), {})
+  sql_admins     = ["kev.pinto@nwmworld.com", "simon.darlington@nwmworld.com"]
+  sql_sa         = ["99999999-compute@developer.gserviceaccount.com"]
+}
 ```
 
 ## Outputs
