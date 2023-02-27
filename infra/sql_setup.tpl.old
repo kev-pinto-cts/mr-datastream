@@ -1,0 +1,56 @@
+-- This Bit is to Setup Logical Replication on the DB
+DO
+\$$
+<<outer_block>>
+begin
+    begin
+        RAISE INFO 'User Grants';
+        ALTER user ${user} with replication;
+    exception when others then
+        RAISE INFO 'Error in User Grants';
+    end;
+
+    begin
+        RAISE INFO 'Creating publication pub1';
+        CREATE PUBLICATION pub1 FOR ALL TABLES  WITH (publish = 'insert,update,delete') ;
+    exception when others then
+        RAISE INFO 'Error Creating publication pub1';
+    end;
+
+   begin
+        RAISE INFO 'Creating publication pub2';
+        CREATE PUBLICATION pub2 FOR ALL TABLES  WITH (publish = 'insert,update,delete') ;
+    exception when others then
+        RAISE INFO 'Creating publication pub2';
+    end;
+
+    begin
+        RAISE INFO 'Creating Replication Slot rs1';
+        SELECT PG_CREATE_LOGICAL_REPLICATION_SLOT('rs1', 'pgoutput');
+    exception when others then
+        RAISE INFO 'Error Creating Replication Slot rs1';
+    end;
+
+    begin
+        RAISE INFO 'Creating Replication Slot rs1';
+        SELECT PG_CREATE_LOGICAL_REPLICATION_SLOT('rs2', 'pgoutput');
+    exception when others then
+        RAISE INFO 'Error Creating Replication Slot rs1';
+    end;
+
+    begin
+        RAISE INFO 'CREATING Schema';
+        CREATE SCHEMA IF NOT EXISTS ${schema};
+    exception when others then
+        RAISE INFO 'Error Creating Replication Slot rs1';
+    end;
+
+    begin
+        GRANT SELECT ON ALL TABLES IN SCHEMA ${schema} TO ${user};
+        GRANT USAGE ON SCHEMA ${schema} TO ${user};
+        ALTER DEFAULT PRIVILEGES IN SCHEMA ${schema} GRANT SELECT ON TABLES TO ${user};
+    exception when others then
+        null;
+    end;
+
+END outer_block \$$;

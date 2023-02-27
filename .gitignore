@@ -6,6 +6,7 @@
 ### ChefCookbook ###
 .vagrant
 /cookbooks
+.terraform
 
 # Bundler
 bin/*
@@ -19,7 +20,7 @@ bin/*
 **/.terraform/*
 **/.terraform.lock.hcl
 
-# .tfstate files
+#.tfstate files
 *.tfstate
 *.tfstate.*
 
