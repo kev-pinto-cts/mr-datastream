@@ -58,7 +58,7 @@ replicas = {
 
 #### Known issues #2
 
-<p>At times, the setup scripts that are supposed to create the replication slots do not execute. This is because the docker instance has not instantiated yet. This is an infrequent occurence, however, in the event of this happening, run the script manually. the script can be found in `/tmp/sql_setup.sql` on your newly created SQL Proxy VM called `sqlproxy`</p>
+<p>At times, the setup scripts that are supposed to create the replication slots do not execute. This is because the docker instance has not instantiated yet. This is an infrequent occurence, however, in the event of this happening, run the script manually. the script can be found in `/tmp/sql_setup.sql` on your newly created SQL Proxy VM called</p>`sqlproxy`
 
 Prior to running the script ensure the proxy is up and running, check this by running `docker ps ` on the VM terminal.
 if the container is not running or has died, restart the same with the following command:
@@ -73,7 +73,8 @@ Specify the password as postgres, exit and run the script to create the replicat
 <br>
 ```psql -h 127.0.0.1 -p 5432 -d demodb -U postgres -f /tmp/sql_setup.sql ```
 <p>
-Note: Failure to detect the replication and publication slots will not allow terraform to create the stream. So terraform apply will have to be run again after creating the slots for the rest of the deployment to complete.
+<br>
+Note: Failure to detect the replication and publication slots will not allow terraform to create the stream. So `terraform apply` will have to be run again after creating the slots for the rest of the deployment to complete.
 </p>
 
 

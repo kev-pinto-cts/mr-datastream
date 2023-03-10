@@ -1,5 +1,5 @@
 provider "google" {
-  project = "cloudsqlpoc-demo"
+  project = "cloudsqlpoc-xxxx"
 }
 
 terraform {

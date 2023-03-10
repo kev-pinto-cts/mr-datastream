@@ -1,11 +1,11 @@
 locals {
   # Change these vars
-  project_id           = "cloudsqlpoc-demo"
+  project_id           = "cloudsqlpoc-xxxx"
   primary_region       = "europe-west2"
   dr_region            = "europe-west1"
   primary_reserved_ips = "10.124.0.0/29"
   dr_reserved_ips      = "10.126.0.0/29"
-  sql_users            = ["kev.pinto@cts.co"]
+  sql_users            = ["kev.pinto@xxx.co"]
 
   # Do not change these
   username = "postgres"
