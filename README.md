@@ -137,9 +137,5 @@ In your repo:
 `python3 tester.py`
 
 
-
-
-
-
 ## Start the Stream
 The streams are deployed in the <b>NOT_STARTED</b>. Manually turn these on from the cloud consoles
