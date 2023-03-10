@@ -2,6 +2,9 @@
 
 Exemplar code to simultaneously write to 2 Bigquery Datasets in 2 separate regions at the same time using datastream.
 
+## Medium Blog Link
+[Medium](https://medium.com/p/a96848d3dbf7/)
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
