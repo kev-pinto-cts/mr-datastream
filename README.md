@@ -37,7 +37,7 @@ Also Please edit `provider.tf` in /infra and change the project ID
 * `terraform plan` -- make sure there are no errors
 * `terraform apply --auto-approve`
 
-### Known issues #1
+#### Known issues #1
 * There is a bug in the existing cloud sql module that does not allow the creation of a CMEK Based Replica using a  Key being created as part of the current TF Plan.
 * As a work around, create the replica in the second pass. this means comment the `replicas block in `module.db` (lines 127-132 in main.tf)
 
@@ -55,7 +55,7 @@ replicas = {
 
 <br>
 
-### Known issues #2
+#### Known issues #2
 
 <p>At times, the setup scripts that are supposed to create the replication slots do not execute. This is because the docker instance has not instantiated yet. This is an infrequent occurence, however, in the event of this happening, run the script manually. the script can be found in `/tmp/sql_setup.sql` on your newly created SQL Proxy VM.</p>
 
