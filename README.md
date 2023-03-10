@@ -58,7 +58,7 @@ replicas = {
 
 #### Known issues #2
 
-<p>At times, the setup scripts that are supposed to create the replication slots do not execute. This is because the docker instance has not instantiated yet. This is an infrequent occurence, however, in the event of this happening, run the script manually. the script can be found in `/tmp/sql_setup.sql` on your newly created SQL Proxy VM.</p>
+<p>At times, the setup scripts that are supposed to create the replication slots do not execute. This is because the docker instance has not instantiated yet. This is an infrequent occurence, however, in the event of this happening, run the script manually. the script can be found in `/tmp/sql_setup.sql` on your newly created SQL Proxy VM called `sqlproxy`</p>
 
 Prior to running the script ensure the proxy is up and running, check this by running `docker ps ` on the VM terminal.
 if the container is not running or has died, restart the same with the following command:
