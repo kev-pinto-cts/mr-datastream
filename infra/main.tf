@@ -1,17 +1,24 @@
 locals {
-  project_id           = "xxxx"
+  # Change these vars
+  project_id           = "cloudsqlpoc-demo"
   primary_region       = "europe-west2"
   dr_region            = "europe-west1"
   primary_reserved_ips = "10.124.0.0/29"
   dr_reserved_ips      = "10.126.0.0/29"
-  sql_users            = ["kev.pinto@cts.co"]
-  username             = "postgres"
-  db                   = "demodb"
-  port                 = 5432
-  schema               = "data_schema"
-  google_services = ["iap.googleapis.com",
+  sql_users            = ["kev.pinto@xxx.com"]
+
+  # Do not change these
+  username = "postgres"
+  db       = "demodb"
+  port     = 5432
+  schema   = "data_schema"
+  google_services = [
+    "iap.googleapis.com",
     "datastream.googleapis.com",
-  "bigquery.googleapis.com"]
+    "bigquery.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "sqladmin.googleapis.com"
+  ]
 
   iam = {
     "roles/cloudsql.admin" = concat(
@@ -27,18 +34,36 @@ locals {
       formatlist("serviceAccount:%s", google_service_account.datastream_sa.email)
     )
   }
+
+  kms_key_members = [
+    "serviceAccount:${google_project_service_identity.gcp_sa_cloud_sql.email}"
+  ]
 }
 
+
+data "google_project" "project" {
+}
+
+
 resource "google_project_service" "service" {
-  for_each = toset(local.google_services)
-  project  = local.project_id
-  service  = each.key
+  for_each           = toset(local.google_services)
+  project            = local.project_id
+  service            = each.key
+  disable_on_destroy = false
+}
+
+resource "google_project_service_identity" "gcp_sa_cloud_sql" {
+  provider   = google-beta
+  project    = local.project_id
+  service    = "sqladmin.googleapis.com"
+  depends_on = [google_project_service.service]
 }
 
 data "google_compute_network" "my-network" {
   name    = "default"
   project = local.project_id
 }
+
 
 data "google_compute_subnetwork" "my-subnetwork" {
   name    = data.google_compute_network.my-network.name
@@ -57,7 +82,8 @@ resource "google_project_iam_binding" "authoritative" {
   role     = each.key
   members  = each.value
   depends_on = [
-    google_service_account.datastream_sa
+    google_service_account.datastream_sa,
+    google_project_service.service
   ]
 }
 
@@ -75,7 +101,7 @@ resource "google_compute_firewall" "sqlproxy" {
 }
 
 module "db" {
-  source              = "git::https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git//modules/cloudsql-instance"
+  source              = "git::https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git//modules/cloudsql-instance?ref=v19.0.0"
   project_id          = local.project_id
   network             = data.google_compute_network.my-network.self_link
   name                = "postgres14-${local.primary_region}"
@@ -96,11 +122,18 @@ module "db" {
     "max_connections"             = 1000
     "cloudsql.iam_authentication" = "on"
   }
+  encryption_key_name = module.eu-west2-blog-keyring.keys["key-a"].id
 
-  replicas = {
-    "postgres14-${local.dr_region}" = { region = local.dr_region, encryption_key_name = null }
-  }
-
+  # replicas = {
+  #   "postgres14-${local.dr_region}" = {
+  #     region              = local.dr_region,
+  #     encryption_key_name = module.eu-west1-blog-keyring-dr.keys["key-a"].id
+  #   }
+  # }
+  depends_on = [
+    module.eu-west2-blog-keyring,
+    module.eu-west1-blog-keyring-dr
+  ]
 }
 
 # Setup Cloud IAM users on the Instance
@@ -110,6 +143,9 @@ resource "google_sql_user" "users" {
   name     = each.value
   instance = module.db.name
   type     = "CLOUD_IAM_USER"
+  depends_on = [
+    module.db
+  ]
 }
 
 # Database username for Cloud IAM service account should be created without ".gserviceaccount.com" suffix.
@@ -127,25 +163,29 @@ module "cloudsqlproxy" {
   project_id = local.project_id
   zone       = "${local.primary_region}-a"
   name       = "sqlproxy"
+
   network_interfaces = [{
     network    = data.google_compute_network.my-network.self_link
     subnetwork = data.google_compute_subnetwork.my-subnetwork.self_link
   }]
+
   instance_type = "e2-medium"
   boot_disk = {
     image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
     type  = "pd-ssd"
-    size  = 50
+    size  = 100
   }
+
   tags                   = ["sqlproxy"]
-  service_account_create = false
+  service_account        = google_service_account.datastream_sa.email
   service_account_scopes = ["cloud-platform"]
+
   metadata = {
     startup-script = templatefile("${path.module}/startup_script.tpl",
       {
+        postgresdb                = local.db
+        docker_image              = "gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.1.1"
         cloud_instance_connection = module.db.connection_name,
-        primary_region            = replace(local.primary_region, "-", "_"),
-        dr_region                 = replace(local.dr_region, "-", "_"),
         pgp                       = local.username
         sql_script = templatefile("${path.module}/sql_setup.tpl",
           {
