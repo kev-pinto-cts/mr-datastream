@@ -32,6 +32,7 @@ Also Please edit `provider.tf` in /infra and change the project ID
 
 
 ## Deploy Steps
+From your Repo Root.
 * cd infra
 * `terraform init`
 * `terraform plan` -- make sure there are no errors
