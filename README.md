@@ -135,8 +135,8 @@ In your repo:
 * cd to `datastream_tester` folder
 * Install the dependencies in a virtual env or a dev container
 `pip3 install -r requirements.txt`
-* Run the code - Make sure to set `db_pass` on line 28 to postgres
-`python3 tester.py`
+* edit tester.py - make sure to set `db_pass` on line 28 to postgres
+* execute the code `python3 tester.py`
 
 
 ## Start the Stream
