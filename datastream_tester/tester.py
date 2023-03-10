@@ -27,7 +27,7 @@ def connect_tcp_socket() -> sqlalchemy.engine.base.Engine:
     db_user = "postgres"
     db_pass = ""
     db_name = "demodb"
-    db_port = 5435
+    db_port = 5432
 
     pool = sqlalchemy.create_engine(
         # Equivalent URL:

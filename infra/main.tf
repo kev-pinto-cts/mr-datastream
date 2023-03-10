@@ -5,7 +5,7 @@ locals {
   dr_region            = "europe-west1"
   primary_reserved_ips = "10.124.0.0/29"
   dr_reserved_ips      = "10.126.0.0/29"
-  sql_users            = ["kev.pinto@xxx.com"]
+  sql_users            = ["kev.pinto@cts.co"]
 
   # Do not change these
   username = "postgres"
@@ -155,6 +155,8 @@ resource "google_sql_user" "service-account" {
   name     = replace(google_service_account.datastream_sa.email, ".gserviceaccount.com", "")
   instance = module.db.name
   type     = "CLOUD_IAM_SERVICE_ACCOUNT"
+
+
 }
 
 
